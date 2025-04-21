@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+    <style>
+        :root {
+            --background-image-url: url('{{ url_for('static', filename='assets/images/hero-bg.png') }}');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            color: var(--independece);
+            font-family: var(--ff-rubik);
+            line-height: 1.8;
+            overflow-y: visible;
+            background-color: var(--midnight-green); /* Fallback color */
+        }
+
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--background-image-url);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            filter: blur(2px); /* Optional subtle blur for elegance */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--radius-12);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: var(--ff-oswald);
+            font-size: 30px; /* Replaced var(--headline-lg) with fixed value for consistency */
+            color: var(--midnight-green);
+            text-align: center;
+            margin-bottom: 50px;
+            padding-left: 90px;
+            position: relative;
+            font-weight: var(--fw-700);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            transition: color 0.3s ease; /* Added for subtle hover effect */
+        }
+
+        h1::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 10px; /* Adjusted to a vertical line width */
+            height: 40px; /* Vertical line height for a unique design */
+            background-color: var(--verdigris);
+            transform: translateY(-50%);
+            transition: width 0.3s ease, height 0.3s ease; /* Smooth transitions */
+        }
+
+        h1:hover {
+            color: #2c3e50; /* Darker shade for hover effect */
+        }
+
+        h1:hover::before {
+            width: 15px; /* Slight expansion on hover */
+            height: 50px; /* Slight height increase on hover */
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px;
+            font-size: var(--title-md);
+            border: 1px solid var(--gainsboro);
+            border-radius: var(--radius-6);
+            background-color: var(--white);
+            color: var(--eerie-black);
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--verdigris);
+            outline: none;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background-color: var(--verdigris);
+            color: var(--white);
+            font-weight: var(--fw-700);
+            border-radius: var(--radius-6);
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .results {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-6);
+            border-left: 4px solid var(--verdigris);
+        }
+
+        .results p {
+            margin: 15px 0;
+            font-size: var(--title-md);
+            color: var(--midnight-green);
+        }
+
+        .results ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .results li {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+            color: var(--independece);
+        }
+
+        .results li::before {
+            content: "•";
+            color: var(--verdigris);
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--verdigris);
+            font-weight: var(--fw-500);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 30px;
+                padding: 20px;
+            }
+            h1 {
+                font-size: var(--headline-md);
+                padding-left: 60px;
+            }
+            h1::before {
+                width: 8px;
+                height: 30px;
+            }
+            .input-wrapper {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-layer"></div>
+    <div class="container">
+        <h1 class="title">Disease Prediction</h1>
+        <form method="POST" action="/prediction">
+            <div class="input-wrapper">
+                <input type="text" name="symptoms" placeholder="Enter your symptoms" class="input-field" required
+                       value="{{ request.form['symptoms'] if request.form else '' }}">
+                <button type="submit" class="btn">
+                    <span>Predict</span>
+                </button>
+            </div>
+        </form>
+        {% if disease %}
+            <div class="results">
+                <p><strong>Predicted Disease:</strong> {{ disease }}</p>
+                <p><strong>Recommended Drugs:</strong></p>
+                <ul>
+                    {% for drug in drugs %}
+                        <li>{{ drug }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="/">Back to Home</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

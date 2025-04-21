@@ -41,7 +41,6 @@ label_encoder = preproc["label_encoder"]
 # Load drug recommendation data
 drug_data = pd.read_csv("Disease_Drug_Dataset.csv")
 drug_data.columns = drug_data.columns.str.strip()  # Clean headers
-# Group multiple drugs per disease into a list
 disease_drugs = drug_data.groupby("disease")["drug"].apply(list).to_dict()
 
 # Clean text input
@@ -66,11 +65,14 @@ def predict_disease_and_drug(symptoms):
 def home():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    symptoms = request.form['symptoms']
-    disease, drugs = predict_disease_and_drug(symptoms)
-    return render_template('result.html', disease=disease, drugs=drugs)
+@app.route('/prediction', methods=['GET', 'POST'])
+def prediction():
+    disease = None
+    drugs = None
+    if request.method == 'POST':
+        symptoms = request.form['symptoms']
+        disease, drugs = predict_disease_and_drug(symptoms)
+    return render_template('prediction.html', disease=disease, drugs=drugs)
 
 if __name__ == '__main__':
     app.run(debug=True)
