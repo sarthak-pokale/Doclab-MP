@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Prediction Result</h1>
+    <p><strong>Predicted Disease:</strong> {{ disease }}</p>
+    <p><strong>Recommended Drugs:</strong></p>
+    <ul>
+        {% for drug in drugs %}
+            <li>{{ drug }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">← Go Back</a>
+</body>
+</html>

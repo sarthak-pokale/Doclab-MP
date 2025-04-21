@@ -1,0 +1,21 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+import pickle
+
+# Load the CSV data
+df = pd.read_csv("Symptom2Disease.csv")
+
+# Initialize the LabelEncoder
+label_encoder = LabelEncoder()
+
+# Fit and transform the 'disease' column
+df['encoded_disease'] = label_encoder.fit_transform(df['disease'])
+
+# Save the LabelEncoder to a pickle file for later use
+with open("label_encoder.pkl", "wb") as f:
+    pickle.dump(label_encoder, f)
+
+# Optionally, save the modified dataframe with the encoded labels
+df.to_csv("encoded_Symptom2Disease.csv", index=False)
+
+print("LabelEncoder saved successfully!")

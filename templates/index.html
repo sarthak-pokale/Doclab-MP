@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disease Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Disease Prediction & Drug Recommendation</h1>
+    <form method="POST" action="/predict">
+        <label for="symptoms">Enter your symptoms:</label><br>
+        <textarea id="symptoms" name="symptoms" rows="5" cols="50" required></textarea><br><br>
+        <button type="submit">Predict</button>
+    </form>
+</body>
+</html>
